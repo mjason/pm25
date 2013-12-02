@@ -1,7 +1,10 @@
-// baidu api
+/*
+ * 把所有api都封装到这里, 方便我们后续的调用
+*/
 
 var querystring = require('querystring')
 var request = require('request')
+var config = require('./config.json')
 
 var authConf = null
 var header = {
@@ -10,6 +13,7 @@ var header = {
 
 exports.header = header
 
+// 根据经纬度获取城市
 exports.getCity = function (lat, lng, callback) {
   var params = {
     location: [lat, lng].join(','),
@@ -26,6 +30,7 @@ exports.getCity = function (lat, lng, callback) {
 
 }
 
+// 根据城市获取pm25的数据
 exports.getPm25 = function (city, callback) {
   var params = {
     city: city,
@@ -42,22 +47,58 @@ exports.getPm25 = function (city, callback) {
   })
 }
 
-exports.sendCard = function () {
-
+// 发送卡片
+exports.sendCard = function (card) {
+  var url = "https://www.googleapis.com/mirror/v1/timeline"
+  request.post(url, { 
+    headers: header,
+    body: JSON.stringify(card)
+  }, function (err, response, body) {
+    console.log(body)
+  })
 }
 
-exports.regSubscriptions = function () {
+// 注册一个Subscriptions
+exports.regSubscriptions = function (callbackUrl, userToken, verifyToken) {
+  var url = "https://www.googleapis.com/mirror/v1/subscriptions"
+  var params = {
+    callbackUrl: callbackUrl,
+    collection: "timeline",
+    operation: ['UPDATE'],
+    userToken: userToken,
+    verifyToken: verifyToken
+  }
 
+  request.post(url, {
+    headers: header,
+    body: JSON.stringify(params)
+  }, function (err, response, body) {
+    console.log(body)
+  })
 }
 
+// 授权成功的callback
 exports.authCallback = function (code, callback) {
   var url = "https://accounts.google.com/o/oauth2/token"
   var params = config.server
   params['code'] = code
-  request.get(url, params, function (err, response, body) {
+  request.post(url, {
+    form: params
+  }, function (err, response, body) {
     body = JSON.parse(body)
     authConf = body
     header['Authorization'] = 'Bearer ' + body.access_token
     callback()
+  })
+}
+
+// 获取用户地理信息
+exports.locations = function (callback) {
+  var url = "https://www.googleapis.com/mirror/v1/locations/latest"
+  request.get(url, {
+    headers: header
+  }, function (err, response, body) {
+    body = JSON.parse(body)
+    callback(body.latitude, body.longitude)
   })
 }
