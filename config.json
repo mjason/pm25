@@ -1,0 +1,38 @@
+{
+  "client": {
+    "client_id": "584944312583-vfeejs5efc03dptnubfdphjmeu4c4om6.apps.googleusercontent.com",
+    "scope": [
+      "https://www.googleapis.com/auth/glass.timeline",
+      "https://www.googleapis.com/auth/glass.location",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ],
+    "redirect_uri": "https://deve.geekku.com/callback",
+    "response_type": "code",
+    "access_type": "offline",
+    "approval_prompt": "force" 
+  },
+  "server": {
+    "client_secret": "eOBvDoWI4RgEJWCySrAZrcz6",
+    "client_id": "584944312583-vfeejs5efc03dptnubfdphjmeu4c4om6.apps.googleusercontent.com",
+    "redirect_uri": "https://deve.geekku.com/callback",
+    "grant_type": "authorization_code"
+  },
+  "card": {
+    "text": "获取PM25",
+    "notification": {
+      "level": "DEFAULT"
+    },
+    "menuItems": [
+      { 
+        "action": "CUSTOM",
+        "id": "GETPM",
+        "values": [{
+          "displayName": "GET PM25"
+        }]
+      },
+      { "action": "SHARE"},
+      { "action": "TOGGLE_PINNED" },
+      { "action": "DELETE" }
+    ]
+  }
+}
